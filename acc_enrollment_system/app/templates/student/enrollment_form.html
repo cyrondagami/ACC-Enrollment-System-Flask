@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% set editing = enrollment is not none %}
+{% block title %}{{ "Edit" if editing else "New" }} Enrollment · ACC{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">ENROLLMENT</p>
+        <h1>{{ "Edit application" if editing else "New enrollment application" }}</h1>
+        <p class="muted">Complete the required information. You can save the application before submitting it.</p>
+    </div>
+</div>
+
+<form method="post" class="card form-grid">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <label>Student number
+        <input name="student_number" maxlength="50" value="{{ enrollment.student_number if editing else '' }}">
+    </label>
+
+    <label>Academic year
+        <input name="academic_year" required maxlength="20" placeholder="2026-2027"
+               value="{{ enrollment.academic_year if editing else '' }}">
+    </label>
+
+    <label>Semester
+        <select name="semester" required>
+            {% for value in ["1st Semester", "2nd Semester", "Summer"] %}
+                <option value="{{ value }}" {% if editing and enrollment.semester == value %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <label>Program
+        <input name="program" required maxlength="100" placeholder="BS Information Technology"
+               value="{{ enrollment.program if editing else '' }}">
+    </label>
+
+    <label>Year level
+        <select name="year_level" required>
+            {% for value in ["1st Year", "2nd Year", "3rd Year", "4th Year"] %}
+                <option value="{{ value }}" {% if editing and enrollment.year_level == value %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <label>Birth date
+        <input type="date" name="birth_date" value="{{ enrollment.birth_date.isoformat() if editing and enrollment.birth_date else '' }}">
+    </label>
+
+    <label>Contact number
+        <input name="contact_number" required maxlength="30" value="{{ enrollment.contact_number if editing else '' }}">
+    </label>
+
+    <label class="full-span">Address
+        <textarea name="address" required maxlength="255" rows="3">{{ enrollment.address if editing else '' }}</textarea>
+    </label>
+
+    <div class="full-span actions">
+        <button class="btn primary" type="submit">{{ "Save Changes" if editing else "Save Draft" }}</button>
+        <a class="btn secondary" href="{{ url_for('student.dashboard') }}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

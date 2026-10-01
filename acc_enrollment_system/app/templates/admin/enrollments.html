@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Enrollments · ACC{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">ADMIN</p>
+        <h1>Enrollment applications</h1>
+    </div>
+</div>
+
+<div class="filters">
+    <a href="{{ url_for('admin.enrollments') }}">All</a>
+    {% for value in ["SUBMITTED", "APPROVED", "REJECTED", "DRAFT"] %}
+        <a class="{{ 'active' if status == value else '' }}" href="{{ url_for('admin.enrollments', status=value) }}">{{ value }}</a>
+    {% endfor %}
+</div>
+
+<div class="card">
+<div class="table-wrap">
+<table>
+<thead><tr><th>#</th><th>Student</th><th>Program</th><th>Period</th><th>Status</th><th></th></tr></thead>
+<tbody>
+{% for item in enrollments %}
+<tr>
+    <td>{{ item.id }}</td>
+    <td>{{ item.student.full_name }}<br><small>{{ item.student.email }}</small></td>
+    <td>{{ item.program }}<br><small>{{ item.year_level }}</small></td>
+    <td>{{ item.academic_year }}<br><small>{{ item.semester }}</small></td>
+    <td><span class="badge {{ item.status|lower }}">{{ item.status }}</span></td>
+    <td><a href="{{ url_for('admin.review_enrollment', enrollment_id=item.id) }}">Review</a></td>
+</tr>
+{% else %}
+<tr><td colspan="6" class="empty">No records.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+{% endblock %}

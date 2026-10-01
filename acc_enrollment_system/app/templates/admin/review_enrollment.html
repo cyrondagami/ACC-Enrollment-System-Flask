@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Review Enrollment #{{ enrollment.id }} · ACC{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">REVIEW APPLICATION #{{ enrollment.id }}</p>
+        <h1>{{ enrollment.student.full_name }}</h1>
+        <p class="muted">{{ enrollment.student.email }}</p>
+    </div>
+    <span class="badge {{ enrollment.status|lower }}">{{ enrollment.status }}</span>
+</div>
+
+<div class="card details">
+    <div><span>Student number</span><strong>{{ enrollment.student_number or "—" }}</strong></div>
+    <div><span>Academic year</span><strong>{{ enrollment.academic_year }}</strong></div>
+    <div><span>Semester</span><strong>{{ enrollment.semester }}</strong></div>
+    <div><span>Program</span><strong>{{ enrollment.program }}</strong></div>
+    <div><span>Year level</span><strong>{{ enrollment.year_level }}</strong></div>
+    <div><span>Birth date</span><strong>{{ enrollment.birth_date or "—" }}</strong></div>
+    <div><span>Contact</span><strong>{{ enrollment.contact_number }}</strong></div>
+    <div class="wide"><span>Address</span><strong>{{ enrollment.address }}</strong></div>
+</div>
+
+{% if enrollment.status == "SUBMITTED" %}
+<form method="post" class="card form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Review note
+        <textarea name="review_note" rows="4" maxlength="2000" placeholder="Required when rejecting; optional when approving."></textarea>
+    </label>
+    <div class="actions">
+        <button class="btn primary" name="action" value="approve" type="submit">Approve</button>
+        <button class="btn danger" name="action" value="reject" type="submit">Reject</button>
+    </div>
+</form>
+{% elif enrollment.review_note %}
+<div class="card notice">
+    <strong>Review note</strong>
+    <p>{{ enrollment.review_note }}</p>
+</div>
+{% endif %}
+
+<a class="btn secondary" href="{{ url_for('admin.enrollments') }}">Back</a>
+{% endblock %}

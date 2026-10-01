@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Enrollment #{{ enrollment.id }} · ACC{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">APPLICATION #{{ enrollment.id }}</p>
+        <h1>Enrollment details</h1>
+    </div>
+    <span class="badge {{ enrollment.status|lower }}">{{ enrollment.status }}</span>
+</div>
+
+<div class="card details">
+    <div><span>Student</span><strong>{{ enrollment.student.full_name }}</strong></div>
+    <div><span>Student number</span><strong>{{ enrollment.student_number or "—" }}</strong></div>
+    <div><span>Academic year</span><strong>{{ enrollment.academic_year }}</strong></div>
+    <div><span>Semester</span><strong>{{ enrollment.semester }}</strong></div>
+    <div><span>Program</span><strong>{{ enrollment.program }}</strong></div>
+    <div><span>Year level</span><strong>{{ enrollment.year_level }}</strong></div>
+    <div><span>Birth date</span><strong>{{ enrollment.birth_date or "—" }}</strong></div>
+    <div><span>Contact</span><strong>{{ enrollment.contact_number }}</strong></div>
+    <div class="wide"><span>Address</span><strong>{{ enrollment.address }}</strong></div>
+</div>
+
+{% if enrollment.review_note %}
+<div class="card notice">
+    <strong>Review note:</strong>
+    <p>{{ enrollment.review_note }}</p>
+</div>
+{% endif %}
+
+<div class="actions">
+    {% if enrollment.status in ["DRAFT", "REJECTED"] %}
+        <a class="btn secondary" href="{{ url_for('student.edit_enrollment', enrollment_id=enrollment.id) }}">Edit</a>
+        <form method="post" action="{{ url_for('student.submit_enrollment', enrollment_id=enrollment.id) }}" class="inline-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn primary" type="submit">Submit for Review</button>
+        </form>
+    {% endif %}
+    <a class="btn secondary" href="{{ url_for('student.dashboard') }}">Back</a>
+</div>
+{% endblock %}

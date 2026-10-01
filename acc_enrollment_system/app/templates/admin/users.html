@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}User Management · ACC{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">SUPER ADMIN</p>
+        <h1>User management</h1>
+        <p class="muted">Manage account status and RBAC roles.</p>
+    </div>
+</div>
+
+<div class="card">
+<div class="table-wrap">
+<table>
+<thead><tr><th>User</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody>
+{% for user in users %}
+<tr>
+    <td><strong>{{ user.full_name }}</strong><br><small>{{ user.email }}</small></td>
+    <td>
+        <form method="post" action="{{ url_for('admin.change_role', user_id=user.id) }}" class="inline-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <select name="role" onchange="this.form.submit()">
+                {% for role in ["student", "admin", "super_admin"] %}
+                    <option value="{{ role }}" {% if user.role == role %}selected{% endif %}>{{ role }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </td>
+    <td><span class="badge {{ 'approved' if user.is_active else 'rejected' }}">{{ "ACTIVE" if user.is_active else "INACTIVE" }}</span></td>
+    <td>
+        {% if user.id != current_user.id %}
+        <form method="post" action="{{ url_for('admin.toggle_user', user_id=user.id) }}" class="inline-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn small secondary" type="submit">{{ "Deactivate" if user.is_active else "Activate" }}</button>
+        </form>
+        {% else %}
+            <small>Current account</small>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+{% endblock %}

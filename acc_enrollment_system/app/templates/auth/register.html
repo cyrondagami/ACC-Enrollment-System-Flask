@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Register · ACC Enrollment{% endblock %}
+{% block content %}
+<section class="auth-card">
+    <h1>Create student account</h1>
+    <p class="muted">Registration creates a student account only. Staff roles are managed by the super admin.</p>
+    <form method="post" class="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Full name
+            <input type="text" name="full_name" required maxlength="120" autocomplete="name">
+        </label>
+        <label>Email
+            <input type="email" name="email" required maxlength="255" autocomplete="email">
+        </label>
+        <label>Password
+            <input type="password" name="password" required minlength="8" autocomplete="new-password">
+        </label>
+        <label>Confirm password
+            <input type="password" name="confirm_password" required minlength="8" autocomplete="new-password">
+        </label>
+        <button class="btn primary full" type="submit">Create account</button>
+    </form>
+    <p class="center muted">Already registered? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+</section>
+{% endblock %}

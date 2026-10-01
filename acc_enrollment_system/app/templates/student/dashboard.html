@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard · ACC{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">STUDENT PORTAL</p>
+        <h1>Hello, {{ current_user.full_name }}</h1>
+        <p class="muted">Manage your enrollment applications.</p>
+    </div>
+    <a class="btn primary" href="{{ url_for('student.create_enrollment') }}">+ New Enrollment</a>
+</div>
+
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Academic Year</th>
+                    <th>Semester</th>
+                    <th>Program</th>
+                    <th>Year Level</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in enrollments %}
+                <tr>
+                    <td>{{ item.academic_year }}</td>
+                    <td>{{ item.semester }}</td>
+                    <td>{{ item.program }}</td>
+                    <td>{{ item.year_level }}</td>
+                    <td><span class="badge {{ item.status|lower }}">{{ item.status }}</span></td>
+                    <td><a href="{{ url_for('student.view_enrollment', enrollment_id=item.id) }}">View</a></td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="empty">No enrollment applications yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
